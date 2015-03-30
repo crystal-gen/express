@@ -1,0 +1,97 @@
+var ConnectRoles = require('connect-roles');
+
+var user = new ConnectRoles({
+	failureHandler: function (req, res, action) {
+		res.status(req.isAuthenticated() ? 403 : 401);
+		res.send();
+	}
+});
+
+user.use('publish', function(req) {
+	if (req.user && req.user.role === 'user') {
+		return true;
+	}
+});;
+
+{{#models}}
+{{#if model.access}}
+
+// {{model.name.plural.param}} model
+
+{{#if model.access.create}}
+user.use('create {{model.name.plural.param}}', function(req) {
+	if (req.user && [{{#access.create.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/access.create.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{#if model.access.read}}
+user.use('read {{model.name.plural.param}}', function(req) {
+	if (req.user && [{{#access.read.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/access.read.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{#if model.access.update}}
+user.use('update {{model.name.plural.param}}', function(req) {
+	if (req.user && [{{#access.update.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/access.update.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{#if model.access.delete}}
+user.use('delete {{model.name.plural.param}}', function(req) {
+	if (req.user && [{{#access.delete.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/access.delete.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+
+// {{model.name.plural.param}} details
+
+{{#details}}
+{{#if detail.access.create}}
+user.use('create {{model.name.plural.param}} {{detail.name.param}}', function(req) {
+	if (req.user && [{{#detail.access.create.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/detail.access.create.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{/details}}
+{{#details}}
+{{#if detail.access.read}}
+user.use('read {{model.name.plural.param}} {{detail.name.param}}', function(req) {
+	if (req.user && [{{#detail.access.read.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/detail.access.read.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{/details}}
+{{#details}}
+{{#if detail.access.update}}
+user.use('update {{model.name.plural.param}} {{detail.name.param}}', function(req) {
+	if (req.user && [{{#detail.access.update.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/detail.access.update.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{/details}}
+{{#details}}
+{{#if detail.access.delete}}
+user.use('delete {{model.name.plural.param}} {{detail.name.param}}', function(req) {
+	if (req.user && [{{#detail.access.delete.roles}}'{{role.name.snake}}'{{#unless @last}},{{/unless}}{{/detail.access.delete.roles}}].indexOf(req.user.role) !== -1) {
+		return true;
+	}
+});
+{{/if}}
+{{/details}}
+{{/if}}
+{{/models}}
+
+user.use(function (req) {
+	if (req.user && req.user.role === 'admin') {
+		return true;
+	}
+});
+
+module.exports = user;

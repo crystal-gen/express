@@ -1,0 +1,49 @@
+name: express
+version: 0.1.0
+description: "[Express](http://expressjs.com) generator for Crystal."
+author:
+  name: Chris Tate
+  email: "chris@studiotate.com"
+copyright: 2014 Studio Tate
+adapters:
+  mongoose:
+    generators:
+      mongoose:
+        version: latest
+  passport:
+    generators:
+      passport:
+        version: latest
+generators:
+  npm:
+    pass: true
+    spec:
+      dependencies:
+        bcrypt: ">=0.8.0"
+        body-parser: ">=1.10.1"
+        connect-roles: ">=3.1.0"
+        express: ">=4.11.0"
+        express-session: ">=1.10.1"
+        multer: ">=0.1.7"
+        passport: ">=0.2.1"
+        passport-http: ">=0.2.2"
+    version: latest
+  project:
+    version: latest
+gen:
+  file:
+    acl:
+      dest: acl.js
+    app:
+      dest: app.js
+    routes:
+      dest: "routes/{{name.plural.param}}.js"
+      spec: models
+  spec:
+    port:
+      required: true
+      type: number
+    routes:
+      key: url
+      type: object
+      value: path

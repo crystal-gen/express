@@ -1,0 +1,9 @@
+name: express-test
+version: 0.1.0
+description: express test
+
+generators:
+  express:
+    spec:
+      port: 8080
+    version: latest

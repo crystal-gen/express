@@ -1,0 +1,70 @@
+/*
+ * /v1/{{name.plural.param}} route
+ */
+
+var acl = require('../acl');
+var express = require('express');
+var {{name.pascal}} = require('../models/{{name.snake}}.js');
+
+var router = express.Router();
+
+router.get('/', acl.can('read {{name.plural.param}}'), function(req, res) {
+	{{name.pascal}}.find(req.params, function(err, {{name.plural.snake}}) {
+		if (err) {
+			res.status(400).send(err);
+			return;
+		}
+		
+		var data, json = [];
+		for (var i in {{name.plural.snake}}) {
+			data = {};
+			{{#details}}
+			if (acl.can('read {{../name.plural.snake}} {{name.snake}}')) {
+				data.{{name.snake}} = {{../name.plural.snake}}[i].{{name.snake}};
+			}
+			{{/details}}
+			json.push(data);
+		}
+		
+		res.json(json);
+	});
+});
+
+router.get('/:{{name.snake}}_id', acl.can('read {{name.plural.param}}'), function(req, res) {
+	{{name.pascal}}.findById(req.params.{{name.snake}}_id, function(err, {{name.snake}}) {
+		if (err) {
+			res.status(400).send(err);
+			return;
+		}
+		
+		var data = {};
+		{{#details}}
+		if (acl.can('read {{../name.plural.snake}} {{name.snake}}')) {
+			data.{{name.snake}} = {{../name.snake}}.{{name.snake}};
+		}
+		{{/details}}
+		
+		res.json({{name.snake}});
+	});
+});
+
+router.post('/', acl.can('create {{name.plural.param}}'), function(req, res) {
+	// create {{name.snake}}
+	var {{name.snake}} = new {{name.pascal}}();
+	{{#details}}
+	if (req.body.{{name.snake}} && req.userCan('create {{../name.plural.snake}} {{name.snake}}')) {
+		{{../name.snake}}.{{name.snake}} = req.body.{{name.snake}};
+	}
+	{{/details}}
+	
+	// save {{name.snake}}
+	{{name.snake}}.save(function(err) {
+		if (err) {
+			res.status(400).send(err);
+			return;
+		}
+		res.json({ {{name.snake}}: {{name.snake}} });
+	});
+});
+
+module.exports = router;
