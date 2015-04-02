@@ -47,6 +47,8 @@ gen:
       key: url
       type: object
       value: path
+    secret:
+      type: string
     ssl_cert:
       type: string
     ssl_key:
