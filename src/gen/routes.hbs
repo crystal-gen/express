@@ -4,12 +4,13 @@
 
 var acl = require('../acl');
 var express = require('express');
+var passport = require('passport');
 var {{name.pascal}} = require('../models/{{name.snake}}.js');
 
 var router = express.Router();
 
 router.get('/', acl.can('read {{name.plural.param}}'), function(req, res) {
-	{{name.pascal}}.find(req.params, function(err, {{name.plural.snake}}) {
+	{{name.pascal}}.find(req.query, function(err, {{name.plural.snake}}) {
 		if (err) {
 			res.status(400).send(err);
 			return;
@@ -19,8 +20,8 @@ router.get('/', acl.can('read {{name.plural.param}}'), function(req, res) {
 		for (var i in {{name.plural.snake}}) {
 			data = {};
 			{{#details}}
-			if (acl.can('read {{../name.plural.snake}} {{name.snake}}')) {
-				data.{{name.snake}} = {{../name.plural.snake}}[i].{{name.snake}};
+			if (acl.can('read {{model.name.plural.snake}} {{detail.name.snake}}')) {
+				data.{{detail.name.snake}} = {{model.name.plural.snake}}[i].{{detail.name.snake}};
 			}
 			{{/details}}
 			json.push(data);
@@ -30,12 +31,41 @@ router.get('/', acl.can('read {{name.plural.param}}'), function(req, res) {
 	});
 });
 
-router.get('/:{{name.snake}}_id', acl.can('read {{name.plural.param}}'), function(req, res) {
-	{{name.pascal}}.findById(req.params.{{name.snake}}_id, function(err, {{name.snake}}) {
+router.get('/search', acl.can('read {{name.plural.param}}'), function(req, res) {
+  for (var i in req.query) {
+    req.query[i] = new RegExp(req.query[i], 'i')
+  }
+  
+	{{name.pascal}}.find(req.query, function(err, {{name.plural.snake}}) {
 		if (err) {
 			res.status(400).send(err);
 			return;
 		}
+		
+		var data, json = [];
+		for (var i in {{name.plural.snake}}) {
+			data = {};
+			{{#details}}
+			if (acl.can('read {{model.name.plural.snake}} {{detail.name.snake}}')) {
+				data.{{detail.name.snake}} = {{model.name.plural.snake}}[i].{{detail.name.snake}};
+			}
+			{{/details}}
+			json.push(data);
+		}
+		
+		res.json(json);
+	});
+});
+
+router.get('/:{{name.snake}}_id', passport.authenticate('basic', { session: false }), acl.can('read {{name.plural.param}}'), function(req, res) {
+	{{name.pascal}}.findById(req.params.{{name.snake}}_id, function(err, {{name.snake}}) {
+		if (err) {
+			res.status(400).send(err);
+			return;
+		} else if (!{{model.name.snake}}) {
+      res.status(404).send('Unknown {{model.name.snake}}.');
+      return;
+    }
 		
 		var data = {};
 		{{#details}}
@@ -48,7 +78,7 @@ router.get('/:{{name.snake}}_id', acl.can('read {{name.plural.param}}'), functio
 	});
 });
 
-router.post('/', acl.can('create {{name.plural.param}}'), function(req, res) {
+router.post('/', passport.authenticate('basic', { session: false }), acl.can('create {{name.plural.param}}'), function(req, res) {
 	// create {{name.snake}}
 	var {{name.snake}} = new {{name.pascal}}();
 	{{#details}}
