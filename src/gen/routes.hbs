@@ -57,7 +57,7 @@ router.get('/search', acl.can('read {{name.plural.param}}'), function(req, res) 
 	});
 });
 
-router.get('/:{{name.snake}}_id', passport.authenticate('basic', { session: false }), acl.can('read {{name.plural.param}}'), function(req, res) {
+router.get('/:{{name.snake}}_id', acl.can('read {{name.plural.param}}'), function(req, res) {
 	{{name.pascal}}.findById(req.params.{{name.snake}}_id, function(err, {{name.snake}}) {
 		if (err) {
 			res.status(400).send(err);
@@ -78,7 +78,7 @@ router.get('/:{{name.snake}}_id', passport.authenticate('basic', { session: fals
 	});
 });
 
-router.post('/', passport.authenticate('basic', { session: false }), acl.can('create {{name.plural.param}}'), function(req, res) {
+router.post('/', acl.can('create {{name.plural.param}}'), function(req, res) {
 	// create {{name.snake}}
 	var {{name.snake}} = new {{name.pascal}}();
 	{{#details}}

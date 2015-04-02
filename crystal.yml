@@ -40,6 +40,9 @@ gen:
       dest: "routes/{{name.plural.param}}.js"
       spec: models
   spec:
+    db_name:
+      required: true
+      type: string
     port:
       required: true
       type: number

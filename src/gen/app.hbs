@@ -14,7 +14,7 @@ var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var User = require('./models/user');
 
-mongoose.connect('mongodb://localhost:27017/crystal-alpha');
+mongoose.connect('mongodb://localhost:27017/{{db_name}}');
 
 var app = express();
 
