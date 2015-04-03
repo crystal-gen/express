@@ -20,9 +20,11 @@ router.get('/', acl.can('read {{name.plural.param}}'), function(req, res) {
 		for (var i in {{name.plural.snake}}) {
 			data = {};
 			{{#details}}
+      {{#unless detail.is.password}}
 			if (acl.can('read {{model.name.plural.snake}} {{detail.name.snake}}')) {
 				data.{{detail.name.snake}} = {{model.name.plural.snake}}[i].{{detail.name.snake}};
 			}
+      {{/unless}}
 			{{/details}}
 			json.push(data);
 		}
@@ -46,9 +48,11 @@ router.get('/search', acl.can('read {{name.plural.param}}'), function(req, res) 
 		for (var i in {{name.plural.snake}}) {
 			data = {};
 			{{#details}}
+      {{#unless detail.is.password}}
 			if (acl.can('read {{model.name.plural.snake}} {{detail.name.snake}}')) {
 				data.{{detail.name.snake}} = {{model.name.plural.snake}}[i].{{detail.name.snake}};
 			}
+      {{/unless}}
 			{{/details}}
 			json.push(data);
 		}
@@ -69,9 +73,11 @@ router.get('/:{{name.snake}}_id', acl.can('read {{name.plural.param}}'), functio
 		
 		var data = {};
 		{{#details}}
+    {{#unless detail.is.password}}
 		if (acl.can('read {{../name.plural.snake}} {{name.snake}}')) {
 			data.{{name.snake}} = {{../name.snake}}.{{name.snake}};
 		}
+    {{/unless}}
 		{{/details}}
 		
 		res.json({{name.snake}});
