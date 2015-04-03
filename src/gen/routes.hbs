@@ -74,8 +74,8 @@ router.get('/:{{name.snake}}_id', acl.can('read {{name.plural.param}}'), functio
 		var data = {};
 		{{#details}}
     {{#unless detail.is.password}}
-		if (acl.can('read {{../name.plural.snake}} {{name.snake}}')) {
-			data.{{name.snake}} = {{../name.snake}}.{{name.snake}};
+		if (acl.can('read {{model.name.plural.snake}} {{detail.name.snake}}')) {
+			data.{{detail.name.snake}} = {{model.name.snake}}.{{detail.name.snake}};
 		}
     {{/unless}}
 		{{/details}}
@@ -88,8 +88,8 @@ router.post('/', acl.can('create {{name.plural.param}}'), function(req, res) {
 	// create {{name.snake}}
 	var {{name.snake}} = new {{name.pascal}}();
 	{{#details}}
-	if (req.body.{{name.snake}} && req.userCan('create {{../name.plural.snake}} {{name.snake}}')) {
-		{{../name.snake}}.{{name.snake}} = req.body.{{name.snake}};
+	if (req.body.{{detail.name.snake}} && req.userCan('create {{model.name.plural.snake}} {{detail.name.snake}}')) {
+		{{model.name.snake}}.{{detail.name.snake}} = req.body.{{detail.name.snake}};
 	}
 	{{/details}}
 	
