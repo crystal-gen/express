@@ -43,6 +43,9 @@ gen:
     db_name:
       required: true
       type: string
+    origins:
+      key: origin
+      type: array
     port:
       required: true
       type: number
